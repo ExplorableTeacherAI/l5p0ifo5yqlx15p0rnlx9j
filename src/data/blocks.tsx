@@ -99,6 +99,80 @@ function FactorsDisplay() {
     );
 }
 
+/** Get multiples of a number */
+function getMultiples(base: number, count: number): number[] {
+    const multiples: number[] = [];
+    for (let i = 1; i <= count; i++) {
+        multiples.push(base * i);
+    }
+    return multiples;
+}
+
+/** Visual number line showing multiples */
+function MultiplesNumberLine() {
+    const base = useVar('multipleBase', 4) as number;
+    const count = useVar('multipleCount', 6) as number;
+    const multiples = getMultiples(base, count);
+    const maxValue = base * count;
+
+    return (
+        <div className="p-6 bg-card rounded-xl border border-border">
+            <div className="text-center mb-4">
+                <div className="text-lg font-semibold text-foreground mb-1">
+                    Multiples of <span className="text-[#10B981] font-bold text-2xl">{base}</span>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                    (First {count} multiples)
+                </div>
+            </div>
+
+            {/* Number line visualization */}
+            <div className="relative mt-6 mb-8">
+                {/* The line */}
+                <div className="h-1 bg-gray-200 rounded-full relative">
+                    {/* Markers for each multiple */}
+                    {multiples.map((m, idx) => {
+                        const position = ((idx + 1) / count) * 100;
+                        return (
+                            <div
+                                key={m}
+                                className="absolute transform -translate-x-1/2"
+                                style={{ left: `${position}%`, top: '-8px' }}
+                            >
+                                <div className="w-4 h-4 rounded-full bg-emerald-500 border-2 border-white shadow-md" />
+                                <div className="absolute top-6 left-1/2 transform -translate-x-1/2 text-sm font-bold text-emerald-600">
+                                    {m}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Multiples as equation */}
+            <div className="mt-8 space-y-2">
+                <div className="text-sm font-medium text-muted-foreground text-center mb-3">
+                    How we get each multiple:
+                </div>
+                <div className="flex flex-wrap justify-center gap-2">
+                    {multiples.map((m, idx) => (
+                        <div
+                            key={m}
+                            className="flex items-center gap-1 px-2 py-1 bg-emerald-50 rounded-lg text-sm"
+                        >
+                            <span className="text-emerald-600 font-semibold">{base}</span>
+                            <span className="text-gray-400">×</span>
+                            <span className="text-purple-600 font-semibold">{idx + 1}</span>
+                            <span className="text-gray-400">=</span>
+                            <span className="text-emerald-700 font-bold">{m}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
 /**
  * ------------------------------------------------------------------
  * HCF & LCM LESSON
@@ -187,6 +261,68 @@ export const blocks: ReactElement[] = [
                 {" "}are factors of{" "}
                 <InlineFormula id="formula-n" latex="\clr{n}{n}" colorMap={{ n: '#1F2937' }} />
                 .
+            </EditableParagraph>
+        </Block>
+    </FullWidthLayout>,
+
+    // ========================================
+    // SECTION 2: WHAT ARE MULTIPLES?
+    // ========================================
+    <FullWidthLayout key="layout-section2-title" maxWidth="xl">
+        <Block id="block-section2-title" padding="md">
+            <EditableH2 id="h2-multiples-title" blockId="block-section2-title">
+                Section 2: What are Multiples?
+            </EditableH2>
+        </Block>
+    </FullWidthLayout>,
+
+    <SplitLayout key="layout-multiples-content" ratio="1:1" gap="lg">
+        <Block id="block-multiples-explanation" padding="sm">
+            <EditableParagraph id="para-multiples-def" blockId="block-multiples-explanation">
+                A{" "}
+                <InlineTooltip id="tooltip-multiple" tooltip="A multiple of a number is the result of multiplying that number by a whole number (1, 2, 3, ...).">
+                    multiple
+                </InlineTooltip>
+                {" "}is what you get when you multiply a number by 1, 2, 3, and so on.
+                Think of it as "skip counting" — the multiples of 3 are 3, 6, 9, 12, 15...
+            </EditableParagraph>
+            <EditableParagraph id="para-multiples-interactive" blockId="block-multiples-explanation">
+                Try changing the base number to{" "}
+                <InlineScrubbleNumber
+                    id="scrubble-multiple-base"
+                    varName="multipleBase"
+                    {...numberPropsFromDefinition(getVariableInfo('multipleBase'))}
+                />
+                {" "}and see its first{" "}
+                <InlineScrubbleNumber
+                    id="scrubble-multiple-count"
+                    varName="multipleCount"
+                    {...numberPropsFromDefinition(getVariableInfo('multipleCount'))}
+                />
+                {" "}multiples on the number line!
+            </EditableParagraph>
+            <EditableParagraph id="para-multiples-formula" blockId="block-multiples-explanation">
+                We can write the multiples of a number{" "}
+                <InlineFormula id="formula-n-mult" latex="\clr{n}{n}" colorMap={{ n: '#10B981' }} />
+                {" "}as:{" "}
+                <InlineFormula
+                    id="formula-multiples"
+                    latex="\clr{n}{n} \times 1, \clr{n}{n} \times 2, \clr{n}{n} \times 3, ..."
+                    colorMap={{ n: '#10B981' }}
+                />
+            </EditableParagraph>
+        </Block>
+        <Block id="block-multiples-visual" padding="sm">
+            <MultiplesNumberLine />
+        </Block>
+    </SplitLayout>,
+
+    <FullWidthLayout key="layout-multiples-comparison" maxWidth="xl">
+        <Block id="block-multiples-comparison" padding="sm">
+            <EditableParagraph id="para-factors-vs-multiples" blockId="block-multiples-comparison">
+                <strong>Factors vs Multiples:</strong> Notice the difference! Factors of 12 are smaller numbers
+                that divide into 12 (like 1, 2, 3, 4, 6, 12). But multiples of 12 are larger numbers
+                that 12 divides into (like 12, 24, 36, 48...). Factors go down, multiples go up!
             </EditableParagraph>
         </Block>
     </FullWidthLayout>,
