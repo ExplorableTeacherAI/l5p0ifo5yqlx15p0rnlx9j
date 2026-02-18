@@ -121,6 +121,21 @@ function getHCF(a: number, b: number): number {
     return Math.max(...common);
 }
 
+/** Get LCM of two numbers */
+function getLCM(a: number, b: number): number {
+    return (a * b) / getHCF(a, b);
+}
+
+/** Get common multiples up to a limit */
+function getCommonMultiples(a: number, b: number, limit: number): number[] {
+    const lcm = getLCM(a, b);
+    const common: number[] = [];
+    for (let i = 1; i * lcm <= limit; i++) {
+        common.push(i * lcm);
+    }
+    return common;
+}
+
 /** Visual number line showing multiples */
 function MultiplesNumberLine() {
     const base = useVar('multipleBase', 4) as number;
@@ -180,6 +195,124 @@ function MultiplesNumberLine() {
                             <span className="text-emerald-700 font-bold">{m}</span>
                         </div>
                     ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+/** LCM number lines visualization */
+function LCMNumberLines() {
+    const numA = useVar('lcmNumberA', 4) as number;
+    const numB = useVar('lcmNumberB', 6) as number;
+
+    const lcm = getLCM(numA, numB);
+    const maxDisplay = Math.min(lcm * 2, 60); // Show up to 2x LCM or 60
+
+    // Generate multiples up to maxDisplay
+    const multiplesA = getMultiples(numA, Math.floor(maxDisplay / numA));
+    const multiplesB = getMultiples(numB, Math.floor(maxDisplay / numB));
+    const commonMultiples = getCommonMultiples(numA, numB, maxDisplay);
+
+    return (
+        <div className="p-6 bg-card rounded-xl border border-border">
+            <div className="text-center mb-6">
+                <div className="text-lg font-semibold text-foreground">
+                    Finding LCM of{" "}
+                    <span className="text-[#06B6D4] font-bold">{numA}</span>
+                    {" "}and{" "}
+                    <span className="text-[#EC4899] font-bold">{numB}</span>
+                </div>
+            </div>
+
+            {/* Number line for A */}
+            <div className="mb-6">
+                <div className="text-sm font-semibold text-cyan-600 mb-2">
+                    Multiples of {numA}:
+                </div>
+                <div className="relative h-10">
+                    <div className="absolute left-0 right-0 top-4 h-1 bg-gray-200 rounded-full" />
+                    {multiplesA.map((m) => {
+                        const position = (m / maxDisplay) * 100;
+                        const isCommon = commonMultiples.includes(m);
+                        return (
+                            <div
+                                key={`a-${m}`}
+                                className="absolute transform -translate-x-1/2"
+                                style={{ left: `${position}%`, top: '0' }}
+                            >
+                                <div className={`w-3 h-3 rounded-full border-2 border-white shadow ${
+                                    isCommon ? 'bg-purple-500 ring-2 ring-purple-300' : 'bg-cyan-500'
+                                }`} />
+                                <div className={`absolute top-4 left-1/2 transform -translate-x-1/2 text-xs font-bold ${
+                                    isCommon ? 'text-purple-600' : 'text-cyan-600'
+                                }`}>
+                                    {m}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Number line for B */}
+            <div className="mb-6">
+                <div className="text-sm font-semibold text-pink-600 mb-2">
+                    Multiples of {numB}:
+                </div>
+                <div className="relative h-10">
+                    <div className="absolute left-0 right-0 top-4 h-1 bg-gray-200 rounded-full" />
+                    {multiplesB.map((m) => {
+                        const position = (m / maxDisplay) * 100;
+                        const isCommon = commonMultiples.includes(m);
+                        return (
+                            <div
+                                key={`b-${m}`}
+                                className="absolute transform -translate-x-1/2"
+                                style={{ left: `${position}%`, top: '0' }}
+                            >
+                                <div className={`w-3 h-3 rounded-full border-2 border-white shadow ${
+                                    isCommon ? 'bg-purple-500 ring-2 ring-purple-300' : 'bg-pink-500'
+                                }`} />
+                                <div className={`absolute top-4 left-1/2 transform -translate-x-1/2 text-xs font-bold ${
+                                    isCommon ? 'text-purple-600' : 'text-pink-600'
+                                }`}>
+                                    {m}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Common multiples highlight */}
+            <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg border border-purple-200">
+                <div className="text-sm text-muted-foreground mb-2 text-center">
+                    Common multiples (appear in both rows):
+                </div>
+                <div className="flex flex-wrap justify-center gap-2 mb-3">
+                    {commonMultiples.length > 0 ? (
+                        commonMultiples.map((m, idx) => (
+                            <span
+                                key={m}
+                                className={`px-3 py-1 rounded-full font-semibold ${
+                                    idx === 0 ? 'bg-purple-500 text-white ring-2 ring-purple-300' : 'bg-purple-100 text-purple-700'
+                                }`}
+                            >
+                                {m}
+                            </span>
+                        ))
+                    ) : (
+                        <span className="text-purple-600">Calculating...</span>
+                    )}
+                </div>
+                <div className="text-center">
+                    <div className="text-sm text-muted-foreground">
+                        The <strong>Lowest Common Multiple</strong> is the smallest:
+                    </div>
+                    <div className="text-3xl font-bold text-purple-600 mt-1">
+                        LCM({numA}, {numB}) = {lcm}
+                    </div>
                 </div>
             </div>
         </div>
@@ -502,6 +635,85 @@ export const blocks: ReactElement[] = [
             </EditableParagraph>
             <EditableParagraph id="para-hcf-step4" blockId="block-hcf-steps">
                 <strong>Step 4:</strong> The HCF is the largest of these common factors!
+            </EditableParagraph>
+        </Block>
+    </FullWidthLayout>,
+
+    // ========================================
+    // SECTION 4: LOWEST COMMON MULTIPLE (LCM)
+    // ========================================
+    <FullWidthLayout key="layout-section4-title" maxWidth="xl">
+        <Block id="block-section4-title" padding="md">
+            <EditableH2 id="h2-lcm-title" blockId="block-section4-title">
+                Section 4: Finding the Lowest Common Multiple (LCM)
+            </EditableH2>
+        </Block>
+    </FullWidthLayout>,
+
+    <FullWidthLayout key="layout-lcm-definition" maxWidth="xl">
+        <Block id="block-lcm-definition" padding="sm">
+            <EditableParagraph id="para-lcm-def" blockId="block-lcm-definition">
+                Just as we found common factors, we can also find common multiples!
+                The{" "}
+                <InlineTooltip id="tooltip-lcm" tooltip="The Lowest Common Multiple (LCM) is the smallest number that is a multiple of two or more numbers.">
+                    Lowest Common Multiple (LCM)
+                </InlineTooltip>
+                {" "}is the smallest number that appears in the times tables of both numbers.
+            </EditableParagraph>
+        </Block>
+    </FullWidthLayout>,
+
+    <SplitLayout key="layout-lcm-content" ratio="1:1" gap="lg">
+        <Block id="block-lcm-explanation" padding="sm">
+            <EditableParagraph id="para-lcm-explore" blockId="block-lcm-explanation">
+                Change the first number to{" "}
+                <InlineScrubbleNumber
+                    id="scrubble-lcm-a"
+                    varName="lcmNumberA"
+                    {...numberPropsFromDefinition(getVariableInfo('lcmNumberA'))}
+                />
+                {" "}and the second number to{" "}
+                <InlineScrubbleNumber
+                    id="scrubble-lcm-b"
+                    varName="lcmNumberB"
+                    {...numberPropsFromDefinition(getVariableInfo('lcmNumberB'))}
+                />
+                . Watch where the multiples first meet — that's the LCM!
+            </EditableParagraph>
+            <EditableH3 id="h3-lcm-steps" blockId="block-lcm-explanation">
+                How to Find the LCM
+            </EditableH3>
+            <EditableParagraph id="para-lcm-step1" blockId="block-lcm-explanation">
+                <strong>Step 1:</strong> List the multiples of the first number.
+            </EditableParagraph>
+            <EditableParagraph id="para-lcm-step2" blockId="block-lcm-explanation">
+                <strong>Step 2:</strong> List the multiples of the second number.
+            </EditableParagraph>
+            <EditableParagraph id="para-lcm-step3" blockId="block-lcm-explanation">
+                <strong>Step 3:</strong> Find the numbers that appear in both lists.
+            </EditableParagraph>
+            <EditableParagraph id="para-lcm-step4" blockId="block-lcm-explanation">
+                <strong>Step 4:</strong> The LCM is the smallest common multiple!
+            </EditableParagraph>
+        </Block>
+        <Block id="block-lcm-visual" padding="sm">
+            <LCMNumberLines />
+        </Block>
+    </SplitLayout>,
+
+    <FullWidthLayout key="layout-hcf-lcm-relationship" maxWidth="xl">
+        <Block id="block-hcf-lcm-relationship" padding="sm">
+            <EditableParagraph id="para-hcf-lcm-relation" blockId="block-hcf-lcm-relationship">
+                <strong>Fun Fact:</strong> HCF and LCM are connected! For any two numbers{" "}
+                <InlineFormula id="formula-rel-a" latex="\clr{a}{a}" colorMap={{ a: '#06B6D4' }} />
+                {" "}and{" "}
+                <InlineFormula id="formula-rel-b" latex="\clr{b}{b}" colorMap={{ b: '#EC4899' }} />
+                , the product of the numbers equals the product of their HCF and LCM:{" "}
+                <InlineFormula
+                    id="formula-hcf-lcm-relation"
+                    latex="\clr{a}{a} \times \clr{b}{b} = \text{HCF} \times \text{LCM}"
+                    colorMap={{ a: '#06B6D4', b: '#EC4899' }}
+                />
             </EditableParagraph>
         </Block>
     </FullWidthLayout>,
