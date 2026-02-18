@@ -108,6 +108,19 @@ function getMultiples(base: number, count: number): number[] {
     return multiples;
 }
 
+/** Get common factors of two numbers */
+function getCommonFactors(a: number, b: number): number[] {
+    const factorsA = getFactors(a);
+    const factorsB = getFactors(b);
+    return factorsA.filter(f => factorsB.includes(f));
+}
+
+/** Get HCF of two numbers */
+function getHCF(a: number, b: number): number {
+    const common = getCommonFactors(a, b);
+    return Math.max(...common);
+}
+
 /** Visual number line showing multiples */
 function MultiplesNumberLine() {
     const base = useVar('multipleBase', 4) as number;
@@ -167,6 +180,101 @@ function MultiplesNumberLine() {
                             <span className="text-emerald-700 font-bold">{m}</span>
                         </div>
                     ))}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+/** Venn diagram visualization for HCF */
+function HCFVennDiagram() {
+    const numA = useVar('hcfNumberA', 12) as number;
+    const numB = useVar('hcfNumberB', 18) as number;
+
+    const factorsA = getFactors(numA);
+    const factorsB = getFactors(numB);
+    const commonFactors = getCommonFactors(numA, numB);
+    const hcf = getHCF(numA, numB);
+
+    const onlyA = factorsA.filter(f => !commonFactors.includes(f));
+    const onlyB = factorsB.filter(f => !commonFactors.includes(f));
+
+    return (
+        <div className="p-6 bg-card rounded-xl border border-border">
+            <div className="text-center mb-4">
+                <div className="text-lg font-semibold text-foreground">
+                    Finding HCF of{" "}
+                    <span className="text-[#EF4444] font-bold">{numA}</span>
+                    {" "}and{" "}
+                    <span className="text-[#F97316] font-bold">{numB}</span>
+                </div>
+            </div>
+
+            {/* Venn Diagram Style */}
+            <div className="flex justify-center items-center gap-0 my-6">
+                {/* Left circle - factors only in A */}
+                <div className="relative">
+                    <div className="w-40 h-40 rounded-full bg-red-100 border-2 border-red-300 flex items-center justify-center">
+                        <div className="text-center pr-8">
+                            <div className="text-xs text-red-600 font-semibold mb-1">Only in {numA}</div>
+                            <div className="flex flex-wrap justify-center gap-1">
+                                {onlyA.map(f => (
+                                    <span key={f} className="px-2 py-0.5 bg-red-200 text-red-700 rounded text-sm font-medium">
+                                        {f}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Overlap - common factors */}
+                <div className="relative -ml-16 z-10">
+                    <div className="w-32 h-40 bg-gradient-to-r from-red-100 via-amber-100 to-orange-100 rounded-full flex items-center justify-center border-y-2 border-amber-300">
+                        <div className="text-center">
+                            <div className="text-xs text-amber-700 font-semibold mb-1">Common</div>
+                            <div className="flex flex-wrap justify-center gap-1">
+                                {commonFactors.map(f => (
+                                    <span
+                                        key={f}
+                                        className={`px-2 py-0.5 rounded text-sm font-medium ${
+                                            f === hcf
+                                                ? 'bg-amber-400 text-amber-900 ring-2 ring-amber-500'
+                                                : 'bg-amber-200 text-amber-700'
+                                        }`}
+                                    >
+                                        {f}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right circle - factors only in B */}
+                <div className="relative -ml-16">
+                    <div className="w-40 h-40 rounded-full bg-orange-100 border-2 border-orange-300 flex items-center justify-center">
+                        <div className="text-center pl-8">
+                            <div className="text-xs text-orange-600 font-semibold mb-1">Only in {numB}</div>
+                            <div className="flex flex-wrap justify-center gap-1">
+                                {onlyB.map(f => (
+                                    <span key={f} className="px-2 py-0.5 bg-orange-200 text-orange-700 rounded text-sm font-medium">
+                                        {f}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Result */}
+            <div className="mt-6 text-center p-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border border-amber-200">
+                <div className="text-sm text-muted-foreground mb-1">
+                    The <strong>Highest Common Factor</strong> is the largest number in the overlap:
+                </div>
+                <div className="text-3xl font-bold text-amber-600">
+                    HCF({numA}, {numB}) = {hcf}
                 </div>
             </div>
         </div>
@@ -323,6 +431,77 @@ export const blocks: ReactElement[] = [
                 <strong>Factors vs Multiples:</strong> Notice the difference! Factors of 12 are smaller numbers
                 that divide into 12 (like 1, 2, 3, 4, 6, 12). But multiples of 12 are larger numbers
                 that 12 divides into (like 12, 24, 36, 48...). Factors go down, multiples go up!
+            </EditableParagraph>
+        </Block>
+    </FullWidthLayout>,
+
+    // ========================================
+    // SECTION 3: HIGHEST COMMON FACTOR (HCF)
+    // ========================================
+    <FullWidthLayout key="layout-section3-title" maxWidth="xl">
+        <Block id="block-section3-title" padding="md">
+            <EditableH2 id="h2-hcf-title" blockId="block-section3-title">
+                Section 3: Finding the Highest Common Factor (HCF)
+            </EditableH2>
+        </Block>
+    </FullWidthLayout>,
+
+    <FullWidthLayout key="layout-hcf-definition" maxWidth="xl">
+        <Block id="block-hcf-definition" padding="sm">
+            <EditableParagraph id="para-hcf-def" blockId="block-hcf-definition">
+                Now that we understand factors, let's find factors that two numbers share!
+                The{" "}
+                <InlineTooltip id="tooltip-hcf" tooltip="The Highest Common Factor (HCF) is the largest number that divides exactly into two or more numbers.">
+                    Highest Common Factor (HCF)
+                </InlineTooltip>
+                {" "}is the biggest factor that two numbers have in common. It's also called the
+                Greatest Common Divisor (GCD).
+            </EditableParagraph>
+        </Block>
+    </FullWidthLayout>,
+
+    <FullWidthLayout key="layout-hcf-interactive" maxWidth="xl">
+        <Block id="block-hcf-interactive" padding="sm">
+            <EditableParagraph id="para-hcf-explore" blockId="block-hcf-interactive">
+                Let's find the HCF of two numbers. Change the first number to{" "}
+                <InlineScrubbleNumber
+                    id="scrubble-hcf-a"
+                    varName="hcfNumberA"
+                    {...numberPropsFromDefinition(getVariableInfo('hcfNumberA'))}
+                />
+                {" "}and the second number to{" "}
+                <InlineScrubbleNumber
+                    id="scrubble-hcf-b"
+                    varName="hcfNumberB"
+                    {...numberPropsFromDefinition(getVariableInfo('hcfNumberB'))}
+                />
+                . Watch the Venn diagram below to see which factors they share!
+            </EditableParagraph>
+        </Block>
+    </FullWidthLayout>,
+
+    <FullWidthLayout key="layout-hcf-visual" maxWidth="xl">
+        <Block id="block-hcf-visual" padding="sm">
+            <HCFVennDiagram />
+        </Block>
+    </FullWidthLayout>,
+
+    <FullWidthLayout key="layout-hcf-steps" maxWidth="xl">
+        <Block id="block-hcf-steps" padding="sm">
+            <EditableH3 id="h3-hcf-steps" blockId="block-hcf-steps">
+                How to Find the HCF
+            </EditableH3>
+            <EditableParagraph id="para-hcf-step1" blockId="block-hcf-steps">
+                <strong>Step 1:</strong> List all the factors of the first number.
+            </EditableParagraph>
+            <EditableParagraph id="para-hcf-step2" blockId="block-hcf-steps">
+                <strong>Step 2:</strong> List all the factors of the second number.
+            </EditableParagraph>
+            <EditableParagraph id="para-hcf-step3" blockId="block-hcf-steps">
+                <strong>Step 3:</strong> Find the factors that appear in both lists (the common factors).
+            </EditableParagraph>
+            <EditableParagraph id="para-hcf-step4" blockId="block-hcf-steps">
+                <strong>Step 4:</strong> The HCF is the largest of these common factors!
             </EditableParagraph>
         </Block>
     </FullWidthLayout>,
