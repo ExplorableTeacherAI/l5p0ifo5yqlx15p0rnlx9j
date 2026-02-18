@@ -78,83 +78,108 @@ export interface VariableDefinition {
  */
 export const variableDefinitions: Record<string, VariableDefinition> = {
     // ========================================
-    // ADD YOUR VARIABLES HERE
+    // HCF & LCM LESSON VARIABLES
     // ========================================
 
-    // Uncomment and modify these examples for your lesson:
+    // Section 1: Factors
+    factorNumber: {
+        defaultValue: 12,
+        type: 'number',
+        label: 'Number to Find Factors',
+        description: 'The number students explore to find its factors',
+        min: 1,
+        max: 50,
+        step: 1,
+        color: '#3B82F6', // Blue
+    },
 
-    /*
-    // ─────────────────────────────────────────
-    // NUMBER - Use with sliders
-    // ─────────────────────────────────────────
-    myValue: {
+    // Section 2: Multiples
+    multipleBase: {
+        defaultValue: 4,
+        type: 'number',
+        label: 'Base Number for Multiples',
+        description: 'The number to find multiples of',
+        min: 1,
+        max: 12,
+        step: 1,
+        color: '#10B981', // Green
+    },
+    multipleCount: {
+        defaultValue: 6,
+        type: 'number',
+        label: 'How Many Multiples',
+        description: 'Number of multiples to display',
+        min: 3,
+        max: 10,
+        step: 1,
+        color: '#8B5CF6', // Purple
+    },
+
+    // Section 3: HCF
+    hcfNumberA: {
+        defaultValue: 12,
+        type: 'number',
+        label: 'First Number for HCF',
+        description: 'First number to find HCF',
+        min: 1,
+        max: 50,
+        step: 1,
+        color: '#EF4444', // Red
+    },
+    hcfNumberB: {
+        defaultValue: 18,
+        type: 'number',
+        label: 'Second Number for HCF',
+        description: 'Second number to find HCF',
+        min: 1,
+        max: 50,
+        step: 1,
+        color: '#F97316', // Orange
+    },
+
+    // Section 4: LCM
+    lcmNumberA: {
+        defaultValue: 4,
+        type: 'number',
+        label: 'First Number for LCM',
+        description: 'First number to find LCM',
+        min: 1,
+        max: 20,
+        step: 1,
+        color: '#06B6D4', // Cyan
+    },
+    lcmNumberB: {
+        defaultValue: 6,
+        type: 'number',
+        label: 'Second Number for LCM',
+        description: 'Second number to find LCM',
+        min: 1,
+        max: 20,
+        step: 1,
+        color: '#EC4899', // Pink
+    },
+
+    // Section 5: Esplanade Light Show
+    lightPatternA: {
+        defaultValue: 3,
+        type: 'number',
+        label: 'Light Pattern A Interval',
+        description: 'Seconds between flashes for Pattern A',
+        min: 2,
+        max: 10,
+        step: 1,
+        color: '#FBBF24', // Yellow
+    },
+    lightPatternB: {
         defaultValue: 5,
         type: 'number',
-        label: 'My Value',
-        description: 'A number that controls something',
-        unit: 'm',           // optional unit display
-        min: 0,
+        label: 'Light Pattern B Interval',
+        description: 'Seconds between flashes for Pattern B',
+        min: 2,
         max: 10,
-        step: 0.5,
+        step: 1,
+        color: '#A855F7', // Purple
     },
-
-    // ─────────────────────────────────────────
-    // TEXT - Free text input
-    // ─────────────────────────────────────────
-    lessonTitle: {
-        defaultValue: 'My Lesson',
-        type: 'text',
-        label: 'Lesson Title',
-        description: 'The title of your lesson',
-        placeholder: 'Enter a title...',
-    },
-
-    // ─────────────────────────────────────────
-    // SELECT - Dropdown with options
-    // ─────────────────────────────────────────
-    difficulty: {
-        defaultValue: 'medium',
-        type: 'select',
-        label: 'Difficulty',
-        description: 'The difficulty level of the lesson',
-        options: ['easy', 'medium', 'hard', 'expert'],
-    },
-
-    // ─────────────────────────────────────────
-    // BOOLEAN - Toggle switch
-    // ─────────────────────────────────────────
-    showHints: {
-        defaultValue: true,
-        type: 'boolean',
-        label: 'Show Hints',
-        description: 'Toggle to show or hide hints',
-    },
-
-    // ─────────────────────────────────────────
-    // ARRAY - List of numbers
-    // ─────────────────────────────────────────
-    dataPoints: {
-        defaultValue: [1, 4, 9, 16, 25],
-        type: 'array',
-        label: 'Data Points',
-        description: 'Y-values for plotting a graph',
-    },
-
-    // ─────────────────────────────────────────
-    // OBJECT - Complex structured data
-    // ─────────────────────────────────────────
-    graphSettings: {
-        defaultValue: { 
-            xMin: -10, 
-            xMax: 10, 
-            showGrid: true 
-        },
-        type: 'object',
-        label: 'Graph Settings',
-        description: 'Configuration for the graph display',
-        schema: '{ xMin: number, xMax: number, showGrid: boolean }',
-    },
-    */
 };
 
 /**
